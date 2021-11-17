@@ -9,7 +9,7 @@ use crate::{RsaPrivateKeyDocument, RsaPublicKeyDocument};
 #[cfg(feature = "pem")]
 use {crate::LineEnding, alloc::string::String};
 
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", not(target_env = "sgx")))]
 use std::path::Path;
 
 #[cfg(any(feature = "pem", feature = "std"))]
@@ -42,7 +42,7 @@ pub trait FromRsaPrivateKey: Sized {
 
     /// Load PKCS#1 private key from an ASN.1 DER-encoded file on the local
     /// filesystem (binary format).
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn read_pkcs1_der_file(path: &Path) -> Result<Self> {
         RsaPrivateKeyDocument::read_pkcs1_der_file(path)
@@ -50,7 +50,7 @@ pub trait FromRsaPrivateKey: Sized {
     }
 
     /// Load PKCS#1 private key from a PEM-encoded file on the local filesystem.
-    #[cfg(all(feature = "pem", feature = "std"))]
+    #[cfg(all(feature = "pem", feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "pem")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn read_pkcs1_pem_file(path: &Path) -> Result<Self> {
@@ -86,7 +86,7 @@ pub trait FromRsaPublicKey: Sized {
 
     /// Load [`RsaPublicKey`] from an ASN.1 DER-encoded file on the local
     /// filesystem (binary format).
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn read_pkcs1_der_file(path: &Path) -> Result<Self> {
         RsaPublicKeyDocument::read_pkcs1_der_file(path)
@@ -94,7 +94,7 @@ pub trait FromRsaPublicKey: Sized {
     }
 
     /// Load [`RsaPublicKey`] from a PEM-encoded file on the local filesystem.
-    #[cfg(all(feature = "pem", feature = "std"))]
+    #[cfg(all(feature = "pem", feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "pem")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn read_pkcs1_pem_file(path: &Path) -> Result<Self> {
@@ -125,14 +125,14 @@ pub trait ToRsaPrivateKey {
     }
 
     /// Write ASN.1 DER-encoded PKCS#1 private key to the given path.
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn write_pkcs1_der_file(&self, path: &Path) -> Result<()> {
         self.to_pkcs1_der()?.write_pkcs1_der_file(path)
     }
 
     /// Write ASN.1 DER-encoded PKCS#1 private key to the given path.
-    #[cfg(all(feature = "pem", feature = "std"))]
+    #[cfg(all(feature = "pem", feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "pem")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn write_pkcs1_pem_file(&self, path: &Path) -> Result<()> {
@@ -162,14 +162,14 @@ pub trait ToRsaPublicKey {
     }
 
     /// Write ASN.1 DER-encoded public key to the given path.
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn write_pkcs1_der_file(&self, path: &Path) -> Result<()> {
         self.to_pkcs1_der()?.write_pkcs1_der_file(path)
     }
 
     /// Write ASN.1 DER-encoded public key to the given path.
-    #[cfg(all(feature = "pem", feature = "std"))]
+    #[cfg(all(feature = "pem", feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "pem")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn write_pkcs1_pem_file(&self, path: &Path) -> Result<()> {

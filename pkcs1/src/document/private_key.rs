@@ -16,7 +16,7 @@ use {
     core::str::FromStr,
 };
 
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", not(target_env = "sgx")))]
 use std::{fs, path::Path, str};
 
 /// PKCS#1 `RSA PRIVATE KEY` document.
@@ -65,13 +65,13 @@ impl FromRsaPrivateKey for RsaPrivateKeyDocument {
         Ok(Self(Zeroizing::new(der_bytes)))
     }
 
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn read_pkcs1_der_file(path: &Path) -> Result<Self> {
         fs::read(path)?.try_into()
     }
 
-    #[cfg(all(feature = "pem", feature = "std"))]
+    #[cfg(all(feature = "pem", feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "pem")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn read_pkcs1_pem_file(path: &Path) -> Result<Self> {
@@ -91,13 +91,13 @@ impl ToRsaPrivateKey for RsaPrivateKeyDocument {
         Ok(Zeroizing::new(pem_doc))
     }
 
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn write_pkcs1_der_file(&self, path: &Path) -> Result<()> {
         write_secret_file(path, self.as_der())
     }
 
-    #[cfg(all(feature = "pem", feature = "std"))]
+    #[cfg(all(feature = "pem", feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "pem")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn write_pkcs1_pem_file(&self, path: &Path) -> Result<()> {
