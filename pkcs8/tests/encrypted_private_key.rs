@@ -231,7 +231,7 @@ fn encode_ed25519_encpriv_aes256_pbkdf2_sha256_pem() {
 }
 
 #[test]
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", not(target_env = "sgx")))]
 fn read_der_file() {
     let pkcs8_doc = EncryptedPrivateKeyDocument::read_der_file(
         "tests/examples/ed25519-encpriv-aes256-pbkdf2-sha256.der",
@@ -241,7 +241,7 @@ fn read_der_file() {
 }
 
 #[test]
-#[cfg(all(feature = "pem", feature = "std"))]
+#[cfg(all(feature = "pem", feature = "std", not(target_env = "sgx")))]
 fn read_pem_file() {
     let pkcs8_doc = EncryptedPrivateKeyDocument::read_pem_file(
         "tests/examples/ed25519-encpriv-aes256-pbkdf2-sha256.pem",

@@ -23,7 +23,7 @@ use {
     core::str::FromStr,
 };
 
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", not(target_env = "sgx")))]
 use std::{fs, path::Path, str};
 
 /// PKCS#8 private key document.
@@ -85,14 +85,14 @@ impl PrivateKeyDocument {
 
     /// Load [`PrivateKeyDocument`] from an ASN.1 DER-encoded file on the local
     /// filesystem (binary format).
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     pub fn read_der_file(path: impl AsRef<Path>) -> Result<Self> {
         fs::read(path)?.try_into()
     }
 
     /// Load [`PrivateKeyDocument`] from a PEM-encoded file on the local filesystem.
-    #[cfg(all(feature = "pem", feature = "std"))]
+    #[cfg(all(feature = "pem", feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "pem")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     pub fn read_pem_file(path: impl AsRef<Path>) -> Result<Self> {
@@ -100,14 +100,14 @@ impl PrivateKeyDocument {
     }
 
     /// Write ASN.1 DER-encoded PKCS#8 private key to the given path
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     pub fn write_der_file(&self, path: impl AsRef<Path>) -> Result<()> {
         write_secret_file(path, self.as_ref())
     }
 
     /// Write PEM-encoded PKCS#8 private key to the given path
-    #[cfg(all(feature = "pem", feature = "std"))]
+    #[cfg(all(feature = "pem", feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "pem")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     pub fn write_pem_file(&self, path: impl AsRef<Path>) -> Result<()> {
@@ -251,7 +251,7 @@ pub(super) fn write_secret_file(path: impl AsRef<Path>, data: &[u8]) -> Result<(
 
 /// Write a file containing secret data to the filesystem
 // TODO(tarcieri): permissions hardening on Windows
-#[cfg(all(not(unix), feature = "std"))]
+#[cfg(all(not(unix), not(target_env = "sgx"), feature = "std"))]
 pub(super) fn write_secret_file(path: impl AsRef<Path>, data: &[u8]) -> Result<()> {
     fs::write(path, data)?;
     Ok(())

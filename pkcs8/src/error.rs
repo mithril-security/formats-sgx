@@ -27,7 +27,7 @@ pub enum Error {
     Crypto,
 
     /// File not found error.
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     FileNotFound,
 
@@ -39,7 +39,7 @@ pub enum Error {
     KeyMalformed,
 
     /// I/O errors.
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     Io,
 
@@ -53,7 +53,7 @@ pub enum Error {
     Pem,
 
     /// Permission denied reading file.
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     PermissionDenied,
 
@@ -68,15 +68,15 @@ impl fmt::Display for Error {
         match self {
             Error::Asn1(err) => write!(f, "PKCS#8 ASN.1 error: {}", err),
             Error::Crypto => f.write_str("PKCS#8 cryptographic error"),
-            #[cfg(feature = "std")]
+            #[cfg(all(feature = "std", not(target_env = "sgx")))]
             Error::FileNotFound => f.write_str("file not found"),
             Error::KeyMalformed => f.write_str("PKCS#8 cryptographic key data malformed"),
-            #[cfg(feature = "std")]
+            #[cfg(all(feature = "std", not(target_env = "sgx")))]
             Error::Io => f.write_str("I/O error"),
             Error::ParametersMalformed => f.write_str("PKCS#8 algorithm parameters malformed"),
             #[cfg(feature = "pem")]
             Error::Pem => f.write_str("PKCS#8 PEM error"),
-            #[cfg(feature = "std")]
+            #[cfg(all(feature = "std", not(target_env = "sgx")))]
             Error::PermissionDenied => f.write_str("permission denied"),
             #[cfg(feature = "pkcs1")]
             Error::Pkcs1(err) => write!(f, "{}", err),
@@ -114,7 +114,7 @@ impl From<pkcs1::Error> for Error {
     }
 }
 
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", not(target_env = "sgx")))]
 impl From<std::io::Error> for Error {
     fn from(err: std::io::Error) -> Error {
         match err.kind() {

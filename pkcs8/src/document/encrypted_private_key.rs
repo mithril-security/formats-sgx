@@ -19,7 +19,7 @@ use {
     core::str::FromStr,
 };
 
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", not(target_env = "sgx")))]
 use {
     super::private_key::write_secret_file,
     std::{fs, path::Path},
@@ -97,7 +97,7 @@ impl EncryptedPrivateKeyDocument {
 
     /// Load [`EncryptedPrivateKeyDocument`] from an ASN.1 DER-encoded file on
     /// the local filesystem (binary format).
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     pub fn read_der_file(path: impl AsRef<Path>) -> Result<Self> {
         fs::read(path)?.try_into()
@@ -105,7 +105,7 @@ impl EncryptedPrivateKeyDocument {
 
     /// Load [`EncryptedPrivateKeyDocument`] from a PEM-encoded file on the
     /// local filesystem.
-    #[cfg(all(feature = "pem", feature = "std"))]
+    #[cfg(all(feature = "pem", feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "pem")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     pub fn read_pem_file(path: impl AsRef<Path>) -> Result<Self> {
@@ -113,14 +113,14 @@ impl EncryptedPrivateKeyDocument {
     }
 
     /// Write ASN.1 DER-encoded PKCS#8 encrypted private key to the given path.
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     pub fn write_der_file(&self, path: impl AsRef<Path>) -> Result<()> {
         write_secret_file(path, self.as_ref())
     }
 
     /// Write PEM-encoded PKCS#8 encrypted private key to the given path.
-    #[cfg(all(feature = "pem", feature = "std"))]
+    #[cfg(all(feature = "pem", feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "pem")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     pub fn write_pem_file(&self, path: impl AsRef<Path>) -> Result<()> {

@@ -148,14 +148,14 @@ fn encode_rsa_2048_pem() {
 }
 
 #[test]
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", not(target_env = "sgx")))]
 fn read_der_file() {
     let pkcs8_doc = PublicKeyDocument::read_der_file("tests/examples/p256-pub.der").unwrap();
     assert_eq!(pkcs8_doc.as_ref(), EC_P256_DER_EXAMPLE);
 }
 
 #[test]
-#[cfg(all(feature = "pem", feature = "std"))]
+#[cfg(all(feature = "pem", feature = "std", not(target_env = "sgx")))]
 fn read_pem_file() {
     let pkcs8_doc = PublicKeyDocument::read_pem_file("tests/examples/p256-pub.pem").unwrap();
     assert_eq!(pkcs8_doc.as_ref(), EC_P256_DER_EXAMPLE);

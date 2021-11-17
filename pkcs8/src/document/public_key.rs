@@ -8,7 +8,7 @@ use core::{
 };
 use der::Encodable;
 
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", not(target_env = "sgx")))]
 use std::{fs, path::Path, str};
 
 #[cfg(feature = "pem")]
@@ -78,14 +78,14 @@ impl PublicKeyDocument {
 
     /// Load [`PublicKeyDocument`] from an ASN.1 DER-encoded file on the local
     /// filesystem (binary format).
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     pub fn read_der_file(path: impl AsRef<Path>) -> Result<Self> {
         fs::read(path)?.try_into()
     }
 
     /// Load [`PublicKeyDocument`] from a PEM-encoded file on the local filesystem.
-    #[cfg(all(feature = "pem", feature = "std"))]
+    #[cfg(all(feature = "pem", feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "pem")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     pub fn read_pem_file(path: impl AsRef<Path>) -> Result<Self> {
@@ -93,7 +93,7 @@ impl PublicKeyDocument {
     }
 
     /// Write ASN.1 DER-encoded public key to the given path
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     pub fn write_der_file(&self, path: impl AsRef<Path>) -> Result<()> {
         fs::write(path, self.as_ref())?;
@@ -101,7 +101,7 @@ impl PublicKeyDocument {
     }
 
     /// Write PEM-encoded public key to the given path
-    #[cfg(all(feature = "pem", feature = "std"))]
+    #[cfg(all(feature = "pem", feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "pem")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     pub fn write_pem_file(&self, path: impl AsRef<Path>) -> Result<()> {
