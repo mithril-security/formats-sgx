@@ -8,7 +8,7 @@ use core::{
 };
 use der::Encodable;
 
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", not(target_env = "sgx")))]
 use std::{fs, path::Path, str};
 
 #[cfg(feature = "pem")]
@@ -64,13 +64,13 @@ impl FromRsaPublicKey for RsaPublicKeyDocument {
         Ok(Self(der_bytes))
     }
 
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn read_pkcs1_der_file(path: &Path) -> Result<Self> {
         fs::read(path)?.try_into()
     }
 
-    #[cfg(all(feature = "pem", feature = "std"))]
+    #[cfg(all(feature = "pem", feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "pem")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn read_pkcs1_pem_file(path: &Path) -> Result<Self> {
@@ -89,14 +89,14 @@ impl ToRsaPublicKey for RsaPublicKeyDocument {
         Ok(pem::encode_string(PEM_TYPE_LABEL, line_ending, &self.0)?)
     }
 
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn write_pkcs1_der_file(&self, path: &Path) -> Result<()> {
         fs::write(path, self.as_ref())?;
         Ok(())
     }
 
-    #[cfg(all(feature = "pem", feature = "std"))]
+    #[cfg(all(feature = "pem", feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "pem")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn write_pkcs1_pem_file(&self, path: &Path) -> Result<()> {

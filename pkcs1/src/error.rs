@@ -28,12 +28,12 @@ pub enum Error {
     Crypto,
 
     /// File not found error.
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     FileNotFound,
 
     /// I/O errors.
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     Io,
 
@@ -42,7 +42,7 @@ pub enum Error {
     Pem(pem::Error),
 
     /// Permission denied reading file.
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", not(target_env = "sgx")))]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     PermissionDenied,
 
@@ -55,14 +55,14 @@ impl fmt::Display for Error {
         match self {
             Error::Asn1(err) => write!(f, "PKCS#1 ASN.1 error: {}", err),
             Error::Crypto => f.write_str("PKCS#1 cryptographic error"),
-            #[cfg(feature = "std")]
+            #[cfg(all(feature = "std", not(target_env = "sgx")))]
             Error::FileNotFound => f.write_str("file not found"),
-            #[cfg(feature = "std")]
+            #[cfg(all(feature = "std", not(target_env = "sgx")))]
             Error::Io => f.write_str("I/O error"),
             #[cfg(feature = "pem")]
             Error::Pem(err) => write!(f, "PKCS#1 {}", err),
             Error::Version => f.write_str("PKCS#1 version error"),
-            #[cfg(feature = "std")]
+            #[cfg(all(feature = "std", not(target_env = "sgx")))]
             Error::PermissionDenied => f.write_str("permission denied"),
         }
     }
@@ -84,7 +84,7 @@ impl From<der::Error> for Error {
     }
 }
 
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", not(target_env = "sgx")))]
 impl From<std::io::Error> for Error {
     fn from(err: std::io::Error) -> Error {
         match err.kind() {
